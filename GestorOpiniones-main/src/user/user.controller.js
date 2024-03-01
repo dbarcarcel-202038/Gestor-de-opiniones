@@ -75,7 +75,7 @@ export const login = async (req, res) => {
     }
 }
 
-export const edit = async (req, res) => {
+export const update = async (req, res) => {
     try {
         let data = req.body;
         let { id } = req.params
@@ -84,9 +84,9 @@ export const edit = async (req, res) => {
         if(id != uid) return  res.status(401).send({ message: 'you can only update your account' })
         if (!updated) return res.status(400).send({ message: 'Have submitted some data that cannot be updated or missing data' })
         let updatedUsers = await User.findOneAndUpdate(
-            { _id: id }, //ObjectsId <- hexadecimales (Hora sys, Version Mongo, Llave privada...)
-            data, //Los datos que se van a actualizar
-            { new: true } //Objeto de la BD ya actualizado
+            { _id: id }, 
+            data, 
+            { new: true } 
         )
         if (!updatedUsers) return res.status(401).send({ message: 'User not found and not updated' })
         return res.send({ message: 'Updated user', updatedUsers })
@@ -96,35 +96,28 @@ export const edit = async (req, res) => {
     }
 }
 
-export const editPassword = async (req, res) => {
+export const updatePassword = async (req, res) => {
     try {
         let { oldPassword, newPassword } = req.body;
         let { id } = req.params;
         let uid = req.user._id
-
-
-        // Verificar que el usuario esté intentando actualizar su propia cuenta
         if (id != uid) 
-            return res.status(401).send({ message: 'You can only update your own account' });
+            return res.status(401).send({ message: 'You only can update your own account' });
 
-        // Verificar que se haya enviado una nueva contraseña
         if (!newPassword) 
             return res.status(400).send({ message: 'New password is missing' });
 
-        // Obtener el usuario de la base de datos y verificar que existe
         let user = await User.findOne({ _id: id });
         if (!user) 
             return res.status(404).send({ message: 'User not found' });
 
-        // Verificar que la contraseña anterior coincida con la almacenada en la base de datos
         if (!(await comparePassword(oldPassword, user.password))) 
-            return res.status(401).send({ message: 'Incorrect old password' });
+            return res.status(401).send({ message: 'The old password is incorrect' });
 
-        // Actualizar la contraseña del usuario utilizando findOneAndUpdate
         let updatedUser = await User.findOneAndUpdate(
-            { _id: id }, // Condición para encontrar el usuario por su ID y contraseña antigua
-            { password: await encrypt(newPassword) }, // Actualizar la contraseña
-            { new: true } // Devolver el usuario actualizado
+            { _id: id }, 
+            { password: await encrypt(newPassword) }, 
+            { new: true } 
         );
 
         if (!updatedUser) 

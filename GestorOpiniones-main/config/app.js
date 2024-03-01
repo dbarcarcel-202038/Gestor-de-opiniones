@@ -3,7 +3,7 @@ import morgan from 'morgan'
 import helmet from 'helmet'
 import cors from 'cors'
 import { config } from "dotenv"
-import publiRoutes from '../src/publication/publi.routes.js'
+import publiRoutes from '../src/posts/post.routes.js'
 import commentRoutes from '../src/comment/comment.routes.js'
 import userRoutes from '../src/user/user.routes.js'
 import categoryRoutes from '../src/category/category.routes.js'

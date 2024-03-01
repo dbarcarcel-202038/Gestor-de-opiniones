@@ -1,5 +1,5 @@
 import {Router} from 'express'
-import { add, deleted, update } from './publi.controller.js'
+import { add, deleted, update } from './post.controller.js'
 import { validateJwt } from '../middleware/validate.js'
 
 const api = Router()

@@ -1,6 +1,6 @@
 import Comment from './comment.model.js'
 import User from '../user/user.model.js'
-import Publi from '../publication/publi.model.js'
+import Publi from '../posts/post.model.js'
 import jwt from 'jsonwebtoken'
 import { checkUpdate } from '../../utils/validator.js'
 
@@ -9,7 +9,6 @@ export const add = async (req, res) => {
         let data = req.body
         let uid = req.user._id
 
-        //let uid = req.user._id
         data.user = uid
         if(!data.publication || !data.comment || !data.user) return res.status(400).send({message: 'You must send all the parameters'})
         let comment = new Comment(data)
@@ -46,12 +45,9 @@ export const deleted = async (req, res) => {
         let uid = req.user._id
 
 
-        // Verificar si la publicación existe y si el usuario es el propietario
         let comment = await Comment.findOne({ _id: id, user: uid });
         if (!comment)
             return res.status(404).send({ message: 'Comment not found or you are not authorized to delete it' });
-
-        // Eliminar la publicación
         let updatedComment = await Comment.findOneAndDelete({ _id: id, user: uid });
         if (!updatedComment)
             return res.status(500).send({ message: 'Error deleting comment' });
