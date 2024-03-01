@@ -8,7 +8,6 @@ export const add = async (req, res) => {
         let data = req.body
         let uid = req.user._id
 
-        //let uid = req.user._id
         data.user = uid
         let publi = new posts(data)
         await publi.save()
@@ -25,12 +24,10 @@ export const deleted = async (req, res) => {
         let uid = req.user._id
 
 
-        // Verificar si la publicación existe y si el usuario es el propietario
         let publication = await posts.findOne({ _id: id, user: uid });
         if (!publication)
             return res.status(404).send({ message: 'Post not found or you are not authorized to delete it' });
 
-        // Eliminar la publicación
         let deletedPublication = await posts.findOneAndDelete({ _id: id, user: uid });
         if (!deletedPublication)
             return res.status(500).send({ message: 'Error deleting post' });
